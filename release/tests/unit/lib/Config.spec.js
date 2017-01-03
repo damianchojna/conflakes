@@ -1,8 +1,9 @@
 'use strict';
 const expect = require('chai').expect;
-const fs = require('fs');
-const path = require('path');
-const sinon = require('sinon');
+const fs = require("fs");
+const path = require("path");
+const sinon = require("sinon");
+const ini = require("ini");
 describe('Config Module', () => {
     var { Config } = require(path.join('..', '..', '..', 'src', 'lib', 'Config'));
     var readFileSyncMock;
@@ -27,7 +28,7 @@ describe('Config Module', () => {
             //then
             expect(() => {
                 new Config('config.json');
-            }).to.throw(Error, /Not valid json file.*/);
+            }).to.throw(Error, /Not valid file.*/);
         });
         it('Should throw exception when given import config file is not exist', () => {
             //given
@@ -63,7 +64,85 @@ describe('Config Module', () => {
             //then
             expect(() => {
                 new Config('config.json');
-            }).to.throw(Error, /Not valid json file.*/);
+            }).to.throw(Error, /Not valid file.*/);
+        });
+    });
+    describe('Tests loaders and parsers', () => {
+        beforeEach(function () {
+            readFileSyncMock = sinon.stub(fs, 'readFileSync');
+        });
+        afterEach(function () {
+            readFileSyncMock.restore();
+        });
+        it('Should import file yml file', () => {
+            //given
+            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
+                imports: [
+                    "services.yml"
+                ]
+            }));
+            readFileSyncMock.withArgs('services.yml').returns(`
+                imports:
+                    - routing.json
+                services:
+                    mailer:
+                        class: Mailer
+            `);
+            readFileSyncMock.withArgs('routing.json').returns(JSON.stringify({
+                routing: {
+                    home: {
+                        path: "/"
+                    }
+                }
+            }));
+            //when
+            var config = new Config('config.prod.json');
+            var all = config.all();
+            //then
+            expect(all).to.deep.equal({
+                services: {
+                    mailer: {
+                        class: "Mailer"
+                    }
+                },
+                routing: {
+                    home: {
+                        path: "/"
+                    }
+                }
+            });
+        });
+        it('Should import file ini file', () => {
+            //given
+            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
+                imports: [
+                    "/home/prod/app/infrastructure.ini"
+                ],
+                dbs: {
+                    master: {
+                        host: "dbb"
+                    }
+                }
+            }));
+            readFileSyncMock.withArgs('/home/prod/app/infrastructure.ini').returns(ini.encode({
+                dbs: {
+                    master: {
+                        password: "12345"
+                    },
+                }
+            }));
+            //when
+            var config = new Config('config.prod.json');
+            var all = config.all();
+            //then
+            expect(all).to.deep.equal({
+                dbs: {
+                    master: {
+                        host: "dbb",
+                        password: "12345"
+                    }
+                }
+            });
         });
     });
     describe('Tests "all" method', () => {

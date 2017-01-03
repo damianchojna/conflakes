@@ -1,10 +1,23 @@
 "use strict";
-const path = require("path");
+const pathMod = require("path");
 const fs = require("fs");
 const _ = require("lodash");
+const yml = require("js-yaml");
+const ini = require("ini");
 class Config {
     constructor(rootConfigPath) {
-        this.configs = this.deepFreeze(this.readJsonConfig(rootConfigPath));
+        this.parsers = {
+            '.json': function (content) {
+                return JSON.parse(content);
+            },
+            '.yml': function (content) {
+                return yml.safeLoad(content);
+            },
+            '.ini': function (content) {
+                return ini.parse(content);
+            }
+        };
+        this.configs = this.deepFreeze(this.readConfigFile(rootConfigPath));
     }
     get(property, defaultParam) {
         if (!_.isString(property) || !property) {
@@ -26,28 +39,34 @@ class Config {
     all() {
         return this.configs;
     }
-    readJsonConfig(configPath) {
+    readConfigFile(configPath) {
         try {
-            var json = fs.readFileSync(configPath, 'utf8');
+            var content = fs.readFileSync(configPath, 'utf8');
         }
         catch (e) {
             throw new Error(`There was an error reading the config file: \n${e.toString()}`);
         }
         try {
-            var subconfig = JSON.parse(json);
+            let ext = pathMod.extname(configPath);
+            if (ext in this.parsers) {
+                var subconfig = this.parsers[ext](content);
+            }
+            else {
+                var subconfig = this.parsers[0](content);
+            }
         }
         catch (e) {
-            throw new Error(`Not valid json file: ${configPath}\n${e.toString()}`);
+            throw new Error(`Not valid file: ${configPath}\n${e.toString()}`);
         }
         if ('imports' in subconfig) {
             var imports = subconfig['imports'];
             delete subconfig['imports'];
             imports.forEach((importConfig) => {
-                if (path.isAbsolute(importConfig)) {
-                    _.extend(subconfig, this.readJsonConfig(importConfig));
+                if (pathMod.isAbsolute(importConfig)) {
+                    _.merge(subconfig, this.readConfigFile(importConfig));
                 }
                 else {
-                    _.extend(subconfig, this.readJsonConfig(path.join(path.dirname(configPath), importConfig)));
+                    _.merge(subconfig, this.readConfigFile(pathMod.join(pathMod.dirname(configPath), importConfig)));
                 }
             });
         }

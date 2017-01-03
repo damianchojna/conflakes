@@ -1,12 +1,25 @@
-import path = require('path');
-import fs = require('fs');
-import _ = require('lodash');
+import * as pathMod from 'path';
+import * as fs from 'fs';
+import * as _ from 'lodash';
+import * as yml from 'js-yaml';
+import * as ini from 'ini';
 
 export class Config {
     private configs: Object;
+    private parsers = {
+        '.json': function (content) {
+            return JSON.parse(content);
+        },
+        '.yml': function (content) {
+            return yml.safeLoad(content);
+        },
+        '.ini': function (content) {
+            return ini.parse(content);
+        }
+    }
 
     constructor(rootConfigPath) {
-        this.configs = this.deepFreeze(this.readJsonConfig(rootConfigPath));
+        this.configs = this.deepFreeze(this.readConfigFile(rootConfigPath));
     }
 
     public get(property: string, defaultParam?: any): any {
@@ -35,17 +48,22 @@ export class Config {
         return this.configs;
     }
 
-    private readJsonConfig(configPath: string): Object {
+    private readConfigFile(configPath: string): Object {
         try {
-            var json = fs.readFileSync(configPath, 'utf8')
+            var content = fs.readFileSync(configPath, 'utf8')
         } catch (e) {
             throw new Error(`There was an error reading the config file: \n${e.toString()}`)
         }
 
         try {
-            var subconfig = JSON.parse(json);
+            let ext = pathMod.extname(configPath);
+            if (ext in this.parsers) {
+                var subconfig = this.parsers[ext](content);
+            } else {
+                var subconfig = this.parsers[0](content);
+            }
         } catch (e) {
-            throw new Error(`Not valid json file: ${configPath}\n${e.toString()}`)
+            throw new Error(`Not valid file: ${configPath}\n${e.toString()}`)
         }
 
         if ('imports' in subconfig) {
@@ -53,10 +71,10 @@ export class Config {
             delete subconfig['imports'];
 
             imports.forEach((importConfig)=> {
-                if (path.isAbsolute(importConfig)) {
-                    _.extend(subconfig, this.readJsonConfig(importConfig));
+                if (pathMod.isAbsolute(importConfig)) {
+                    _.merge(subconfig, this.readConfigFile(importConfig));
                 } else {
-                    _.extend(subconfig, this.readJsonConfig(path.join(path.dirname(configPath), importConfig)));
+                    _.merge(subconfig, this.readConfigFile(pathMod.join(pathMod.dirname(configPath), importConfig)));
                 }
             });
         }
@@ -66,7 +84,7 @@ export class Config {
     private deepFreeze(o: Object): Object {
         Object.freeze(o);
 
-        Object.getOwnPropertyNames(o).forEach( (prop)=>{
+        Object.getOwnPropertyNames(o).forEach((prop)=> {
             if (!_.isNull(o[prop]) &&
                 (_.isObject(o[prop]) || _.isFunction(o[prop]))
                 && !Object.isFrozen(o[prop])) {

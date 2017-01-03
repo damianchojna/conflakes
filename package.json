@@ -1,37 +1,39 @@
 {
-    "name": "app-config-node",
-    "version": "1.0.3",
-    "description": "Manage load configuration, dependent on the environment with the ability to import config files defined in the config files",
-    "main": "./release/src/lib/Config.js",
-    "private": false,
-    "readmeFilename": "README.md",
-    "scripts": {
-        "test": "mocha ./release/tests/ --recursive"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/damianchojna/config-node.git"
-    },
-    "author": "Damian Chojna",
-    "license": "MIT",
-    "devDependencies": {
-        "chai": "^3.5.0",
-        "mocha": "^3.2.0",
-        "sinon": "^1.17.6"
-    },
-    "dependencies": {
-        "lodash": "^4.17.2"
-    },
-    "bin": {
-        "build-dist": "bin/build-dist.js"
-    },
-    "keywords": [
-        "app",
-        "config",
-        "configuration",
-        "conf",
-        "settings",
-        "env",
-        "properties"
-    ]
+  "name": "app-config-node",
+  "version": "1.1.1",
+  "description": "Manage load configuration, dependent on the environment with the ability to import config files defined in the config files",
+  "main": "./release/src/lib/Config.js",
+  "private": false,
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "mocha ./release/tests/ --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/damianchojna/config-node.git"
+  },
+  "author": "Damian Chojna",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.6"
+  },
+  "dependencies": {
+    "ini": "^1.3.4",
+    "js-yaml": "^3.7.0",
+    "lodash": "^4.17.2"
+  },
+  "bin": {
+    "build-dist": "bin/build-dist.js"
+  },
+  "keywords": [
+    "app",
+    "config",
+    "configuration",
+    "conf",
+    "settings",
+    "env",
+    "properties"
+  ]
 }

@@ -2,6 +2,11 @@
 
 Manage configuration, dependent on the environment with the ability to import config files defined in the config files.
 
+Supported Formats:
+* json
+* yaml
+* ini
+
 ##Instalation:
 
 1. **Add Dependency**
@@ -39,6 +44,11 @@ Manage configuration, dependent on the environment with the ability to import co
     const config = new Config(__dirname + `/config/config_${APP_ENV}.json``);
     ```
 
+    If you want to use specyfic format, simply give the file with appropriate extension
+    * .json
+    * .yml
+    * .ini
+    
 ##How to use:
 
 1. "get" method returns a parameter by name.
