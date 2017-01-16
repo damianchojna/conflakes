@@ -1,0 +1,5 @@
+imports:
+  - routing.json
+services:
+  mailer:
+    class: Mailer

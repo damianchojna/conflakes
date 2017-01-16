@@ -1,115 +1,60 @@
 'use strict';
 const expect = require('chai').expect;
-import * as fs from 'fs';
-import * as path from 'path';
-import * as sinon from 'sinon';
 import * as ini from 'ini';
+import * as path from 'path';
+
 
 describe('Config Module', () => {
+    function invalidRequireCache(path: string) {
+        delete require.cache[path]
+    }
 
-    var {Config} = require(path.join('..', '..', '..', 'src', 'lib', 'Config'));
-    var readFileSyncMock;
-
-    describe('Tests "constructor"', () => {
-        beforeEach(function () {
-            readFileSyncMock = sinon.stub(fs, 'readFileSync');
+    describe('Tests on load module', () => {
+        let basePath = path.resolve(__dirname, '..', '..', 'fixtures', 'constructor');
+        describe('When CONFIG_DIR is NOT set', () => {
+            it('Should throw exception "There was an error reading the config file"', () => {
+                //given
+                process.env.CONFIG_DIR = 'config.error.json';
+                //then
+                expect(require.bind(null, '../../../src/lib/Config')).to.throw(Error, /There was an error reading the config file.*/);
+            });
         });
-        afterEach(function () {
-            readFileSyncMock.restore();
+        describe('When config file is NOT valid', () => {
+            it('Should throw exception "Not valid file"', () => {
+                //given
+                process.env.CONFIG_DIR = path.resolve(basePath, 'config.json');
+                //then
+                expect(require.bind(null, '../../../src/lib/Config')).to.throw(Error, /Not valid file.*/);
+            });
         });
-        it('Should throw exception when given config file is not exist', () => {
-            //given
-            readFileSyncMock.withArgs('config.json').throws(Error);
-            //then
-            expect(() => {
-                new Config('config.json');
-            }).to.throw(Error, /There was an error reading the config file.*/);
+        describe('When imports file NOT exist', () => {
+            it('Should throw exception "There was an error reading the config file"', () => {
+                //given
+                process.env.CONFIG_DIR = path.resolve(basePath, 'service_bundles.json');
+                //then
+                expect(require.bind(null, '../../../src/lib/Config')).to.throw(Error, /There was an error reading the config file.*/);
+
+            });
         });
+        describe('When imports config file NOT valid', () => {
+            it('Should throw exception "Not valid file"', () => {
+                //given
+                process.env.CONFIG_DIR = path.resolve(basePath, 'load_not_valid.json');
+                //then
+                expect(require.bind(null, '../../../src/lib/Config')).to.throw(Error, /Not valid file.*/);
 
-        it('Should throw exception when given config file has non valid json', () => {
-            //given
-            readFileSyncMock.withArgs('config.json').returns('{');
-            //then
-            expect(() => {
-                new Config('config.json');
-            }).to.throw(Error, /Not valid file.*/);
+            });
         });
-
-        it('Should throw exception when given import config file is not exist', () => {
-            //given
-            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
-                imports: [
-                    "services.json"
-                ],
-            }));
-            readFileSyncMock.withArgs('services.json').returns(JSON.stringify({
-                imports: [
-                    "service_bundles.json"
-                ],
-            }));
-            readFileSyncMock.withArgs('service_bundles.json').throws(Error);
-            //then
-            expect(() => {
-                new Config('service_bundles.json');
-            }).to.throw(Error, /There was an error reading the config file.*/);
-
-        });
-
-        it('Should throw exception when given import config file has non valid json', () => {
-            //given
-            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
-                imports: [
-                    "services.json"
-                ],
-            }));
-            readFileSyncMock.withArgs('services.json').returns(JSON.stringify({
-                imports: [
-                    "service_bundles.json"
-                ],
-            }));
-            readFileSyncMock.withArgs('service_bundles.json').returns('{');
-            //then
-            expect(() => {
-                new Config('config.json');
-            }).to.throw(Error, /Not valid file.*/);
-
-        });
-
     });
 
     describe('Tests loaders and parsers', () => {
-        beforeEach(function () {
-            readFileSyncMock = sinon.stub(fs, 'readFileSync');
-
-        });
-        afterEach(function () {
-            readFileSyncMock.restore();
-        });
-
+        let basePath = path.resolve(__dirname, '..', '..', 'fixtures');
         it('Should import file yml file', () => {
             //given
-            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
-                imports: [
-                    "services.yml"
-                ]
-            }));
-            readFileSyncMock.withArgs('services.yml').returns(`
-                imports:
-                    - routing.json
-                services:
-                    mailer:
-                        class: Mailer
-            `);
-            readFileSyncMock.withArgs('routing.json').returns(JSON.stringify({
-                routing: {
-                    home: {
-                        path: "/"
-                    }
-                }
-            }));
+            process.env.CONFIG_DIR = path.resolve(basePath, 'yml', 'config.prod.json');
             //when
-            var config = new Config('config.prod.json');
-            var all = config.all();
+            const config = require('../../../src/lib/Config').default;
+            let all = config.all();
             //then
             expect(all).to.deep.equal({
                 services: {
@@ -127,26 +72,11 @@ describe('Config Module', () => {
 
         it('Should import file ini file', () => {
             //given
-            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
-                imports: [
-                    "/home/prod/app/infrastructure.ini"
-                ],
-                dbs: {
-                    master: {
-                        host: "dbb"
-                    }
-                }
-            }));
-            readFileSyncMock.withArgs('/home/prod/app/infrastructure.ini').returns(ini.encode({
-                dbs: {
-                    master: {
-                        password: "12345"
-                    },
-                }
-            }));
+            process.env.CONFIG_DIR = path.resolve(basePath, 'ini', 'config.prod.json');
+            invalidRequireCache(path.resolve(__dirname, '..', '..', '..', 'src', 'lib', 'Config.js'));
             //when
-            var config = new Config('config.prod.json');
-            var all = config.all();
+            const config = require('../../../src/lib/Config').default;
+            let all = config.all();
             //then
             expect(all).to.deep.equal({
                 dbs: {
@@ -160,36 +90,16 @@ describe('Config Module', () => {
     });
 
     describe('Tests "all" method', () => {
-        beforeEach(function () {
-            readFileSyncMock = sinon.stub(fs, 'readFileSync');
-            //given
-            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
-                imports: [
-                    "services.json"
-                ],
-                framework: {
-                    name: "AppName"
-                }
-            }));
-            readFileSyncMock.withArgs('services.json').returns(JSON.stringify({
-                services: {
-                    mailer: {
-                        class: "Mailer"
-                    }
-                }
-            }));
+        let basePath = path.resolve(__dirname, '..', '..', 'fixtures'), config;
+        before(() => {
+            invalidRequireCache(path.resolve(__dirname, '..', '..', '..', 'src', 'lib', 'Config.js'));
+            process.env.CONFIG_DIR = path.resolve(basePath, 'methods', 'config.prod.json');
+            config = require('../../../src/lib/Config').default;
         });
-        afterEach(function () {
-            readFileSyncMock.restore();
-        });
-
         it('Should import file form root config', () => {
-            //given
-                //in beforeEach
-            //when
-            var config = new Config('config.prod.json');
-            var all = config.all();
-            //then
+            // when
+            let all = config.all();
+            // then
             expect(all).to.deep.equal({
                 services: {
                     mailer: {
@@ -202,12 +112,9 @@ describe('Config Module', () => {
             });
         });
         it('Should throw exception when someone try modify config properties', () => {
-            //given
-                //in beforeEach
             //when
-            var config = new Config('config.prod.json');
-            var all = config.all();
-            //then
+            let all = config.all();
+            // //then
             expect(() => {
                 all.newParam = 'someValue';
             }).to.throw(Error, /Can't add property newParam, object is not extensible.*/);
@@ -215,53 +122,26 @@ describe('Config Module', () => {
     });
 
     describe('Tests "get" method', () => {
-        beforeEach(function () {
-            readFileSyncMock = sinon.stub(fs, 'readFileSync');
-            //given
-            readFileSyncMock.withArgs('config.prod.json').returns(JSON.stringify({
-                imports: [
-                    "services.json"
-                ],
-                framework: {
-                    name: "AppName"
-                }
-            }));
-            readFileSyncMock.withArgs('services.json').returns(JSON.stringify({
-                services: {
-                    mailer: {
-                        class: "Mailer"
-                    }
-                }
-            }));
-        });
-        afterEach(function () {
-            readFileSyncMock.restore();
+        let config;
+        let basePath = path.resolve(__dirname, '..', '..', 'fixtures');
+        before(() => {
+            invalidRequireCache(path.resolve(__dirname, '..', '..', '..', 'src', 'lib', 'Config.js'));
+            process.env.CONFIG_DIR = path.resolve(basePath, 'methods', 'config.prod.json');
+            config = require('../../../src/lib/Config').default;
         });
         it('Should get property', () => {
-            //given
-                //in beforeEach
             //when
-            var config = new Config('config.prod.json');
-            var mailerClass = config.get('services.mailer.class');
+            let mailerClass = config.get('services.mailer.class');
             //then
             expect(mailerClass).to.equal("Mailer");
         });
         it('Should throw exception when there is no property in the configuration', () => {
-            //given
-                //in beforeEach
-            //when
-            var config = new Config('config.prod.json');
             //then
-            expect(() => {
-                config.get('services.non.exist.parameter');
-            }).to.throw(Error, /Configuration property.*is not defined/);
+            expect(config.get.bind(config, 'services.non.exist.parameter'))
+                .to.throw(Error, /Configuration property.*is not defined/);
         });
         it('Should throw exception when someone try modify config properties', () => {
-            //given
-                //in beforeEach
-            //when
-            var config = new Config('config.prod.json');
-            var services = config.get('services');
+            let services = config.get('services');
             //then
             expect(() => {
                 services.newParam = 'someValue';
