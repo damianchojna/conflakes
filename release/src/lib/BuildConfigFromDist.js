@@ -3,20 +3,21 @@ const fs = require("fs");
 const p = require("path");
 const _ = require("lodash");
 class BuildConfigFromDist {
-    merge(inputFile) {
+    static merge(inputFile) {
         if (!fs.existsSync(inputFile)) {
             throw Error(BuildConfigFromDist.errorMessages.fileNotExist + inputFile);
         }
-        var inputJson = this.readJsonFile(inputFile);
+        let inputJson = BuildConfigFromDist.readJsonFile(inputFile);
         let outputFileName = p.basename(inputFile);
-        var outputFile = p.join(p.dirname(inputFile), this.resolveOutputFileName(outputFileName));
+        let outputFile = p.join(p.dirname(inputFile), BuildConfigFromDist.resolveOutputFileName(outputFileName));
+        let outputJson = {};
         if (fs.existsSync(outputFile)) {
-            var outputJson = this.readJsonFile(outputFile);
+            outputJson = BuildConfigFromDist.readJsonFile(outputFile);
         }
-        var merged = _.merge(inputJson, outputJson);
+        let merged = _.merge(inputJson, outputJson);
         fs.writeFileSync(outputFile, JSON.stringify(merged));
     }
-    readJsonFile(path) {
+    static readJsonFile(path) {
         try {
             return JSON.parse(fs.readFileSync(path, 'utf8'));
         }
@@ -24,7 +25,7 @@ class BuildConfigFromDist {
             throw new Error(BuildConfigFromDist.errorMessages.notValidJsonFile + path);
         }
     }
-    resolveOutputFileName(filename) {
+    static resolveOutputFileName(filename) {
         let splited = filename.split('.');
         if (splited.indexOf("dist") === -1) {
             throw new Error(BuildConfigFromDist.errorMessages.notValidDistFileName + filename);
@@ -32,12 +33,9 @@ class BuildConfigFromDist {
         splited.splice(splited.indexOf('dist'), 1);
         return splited.join('.');
     }
-    isDist(path) {
+    static isDist(path) {
         let splited = p.basename(path).split('.');
-        if (splited.indexOf("dist") === -1) {
-            return false;
-        }
-        return true;
+        return splited.indexOf("dist") !== -1;
     }
 }
 BuildConfigFromDist.errorMessages = {
@@ -45,5 +43,5 @@ BuildConfigFromDist.errorMessages = {
     notValidJsonFile: 'Not valid json in file: ',
     notValidDistFileName: 'Given file name does not contain the "dist" word: '
 };
-exports.BuildConfigFromDist = BuildConfigFromDist;
-//# sourceMappingURL=BuildConfigFromDist.js.map
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = BuildConfigFromDist;

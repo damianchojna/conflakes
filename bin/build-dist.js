@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-const BuildConfigFromDist = require('../release/src/lib/BuildConfigFromDist').BuildConfigFromDist;
-const builDist = new BuildConfigFromDist();
+const BuildConfigFromDist = require('../release/src/lib/BuildConfigFromDist').default;
 const fs = require('fs');
 
 var recursive = false;
@@ -32,14 +31,14 @@ paths.forEach(function (path) {
 });
 
 function buildFromListFile(path) {
-    if (builDist.isDist(path)) {
+    if (BuildConfigFromDist.isDist(path)) {
         console.log(`Build Dist File: ${path}`);
-        builDist.merge(path);
+        BuildConfigFromDist.merge(path);
     }
 }
 
 function fileWalk(dir, callback, recursive) {
-    var list = fs.readdirSync(dir)
+    var list = fs.readdirSync(dir);
     list.forEach(function(file) {
         file = dir + '/' + file;
         var stat = fs.statSync(file);
