@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-const BuildConfigFromDist = require('../release/src/lib/BuildConfigFromDist').BuildConfigFromDist;
+const BuildConfigFromDist = require('../release/src/BuildConfigFromDist').BuildConfigFromDist;
 const builDist = new BuildConfigFromDist();
 const fs = require('fs');
 

@@ -1,0 +1,27 @@
+{
+    "imports" : [
+        {
+            "resource": "../routing/default.json",
+            "ignore_errors": false
+        },
+        {
+            "resource": "../services/utils.json",
+            "ignore_errors": false
+        },
+        {
+            "resource": "../modules/security.json",
+            "ignore_errors": false
+        }
+    ],
+    "dbs": {
+        "master": {
+            "name": "hbq_db"
+        },
+        "slave": {
+            "name": "hbq_db"
+        }
+    },
+    "utils": {
+        "default_items_order":"asc"
+    }
+}

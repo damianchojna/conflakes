@@ -1,0 +1,7 @@
+{
+    "routing": {
+        "_profiler": {
+            "path": "/profiler"
+        }
+    }
+}

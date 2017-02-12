@@ -1,4 +1,14 @@
-1.1.1 / 2016-01-03
+2.0.0 / 2017-02-12
+------------------
+
+- Global Refactoring
+- Add possibility to load several times form different resources
+- Add possibility to load config from "Function"
+- Add possibility to load config from "Object"
+- Changing way of defining import files
+- Circular Reference Error handling
+
+1.1.1 / 2017-01-03
 ------------------
 
 - Add Yml loader

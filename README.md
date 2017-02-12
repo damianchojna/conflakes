@@ -2,10 +2,12 @@
 
 Manage configuration, dependent on the environment with the ability to import config files defined in the config files.
 
-Supported Formats:
-* json
-* yaml
-* ini
+Possibility to load configuration from:
+* Json files
+* Yaml files
+* Ini files
+* Functions
+* Objects
 
 ##Instalation:
 
@@ -32,16 +34,19 @@ Supported Formats:
     
     ```javascript
     const APP_ENV = process.env.NODE_ENV || 'dev';
-	import {Config} form 'app-config-node';
-    const config = new Config(__dirname + `/config/config_${APP_ENV}.json`);
+ 
+    import * as ConfigLoader from 'app-config-node';
+    const configBag = new ConfigLoader().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
+
     ```
     
     *javascript es6*
     
     ```javascript
     const APP_ENV = process.env.NODE_ENV || 'dev';
-    const Config = require('app-config-node').Config;
-    const config = new Config(__dirname + `/config/config_${APP_ENV}.json``);
+ 
+    const ConfigLoader = require('app-config-node');
+    const configBag = new ConfigLoader().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
     ```
 
     If you want to use specyfic format, simply give the file with appropriate extension
@@ -49,36 +54,51 @@ Supported Formats:
     * .yml
     * .ini
     
-##How to use:
+## How to use configBag, method "GetConfig" on ConfigLoader, and methods "get", "all" on configBag :
 
 1. "get" method returns a parameter by name.
 
-
-   Example config with database
+    Example config in example_config.json file
     
-   ```json
-   {
-      "dbs" : {
-          "master" : {
-              "host": "localhost"
-          }
-      }
-   }
-   ``` 
-   
-   To get host to database:
+    ```json
+    {
+          "dbs" : {
+              "master" : {
+                  "host": "localhost"
+              }
+          },
+          "blacklist" : [
+              "192.168.0.110",
+              "192.168.0.120"
+          ]
+    }
+    ``` 
+       
+    ```javascript
+    const ConfigLoaderClass = require('app-config-node');
+    const ConfigLoader = new ConfigLoaderClass().load('example_config.json');
+    const configBag = ConfigLoader.getConfig();
+    ```
     
-   ```javascript
-   config.get('dbs.master.host');
-   ``` 
-   
-   If the parameter does not exist in configuration it will be throw exception, To avoid this you can use default parameter.
-   
-  ```javascript
-  config.get('dbs.master.host', null);
-  ``` 
-  
-  Now if the parameter does not exist it will return null.
+    To get host to database:
+    
+    ```javascript
+    configBag.get('dbs.master.host');
+    ``` 
+    
+    To get first element of the "blacklist" array:
+    
+    ```javascript
+    configBag.get('blacklist[0]');
+    ``` 
+    
+    If the parameter does not exist in configuration it will be throw exception, To avoid this you can use default parameter.
+    
+    ```javascript
+    configBag.get('dbs.master.host', null);
+    ``` 
+    
+    Now if the parameter does not exist it will return null.
   
   
    
@@ -86,19 +106,80 @@ Supported Formats:
 
    Method "all" return all configuration
    ```javascript
-   config.all();
+   configBag.all();
    ``` 
+    
+## How to use resource loaders, method "load":
 
+You can use resources like yml, ini, json files and objects or functions.
+You must keep in mind that each call "load" loads the object which it is merging to the previous configuration if there are duplicate keys in different resources that will be overwritten by the last resource.
+
+**The "Object" and "Function" resource loaders are very helpful you can add to you config for example parameters from "command line arguments" or "environments variables"**
+```javascript
+const configLoaderClass = require('app-config-node');
+const configLoader = new configLoaderClass();
+
+// You can load serveral files, of course the files inside with key "imports":[ ] can import other files
+configLoader.load('file.yml'); // Yaml file resource
+configLoader.load('file.ini'); // Ini File resource
+configLoader.load('file.json'); // Json File resource
+
+// Object resource, the object will be merge to configuration object
+configLoader.load({
+    env: process.env.NODE_ENV,
+    any_parameter_one : 10,
+    any_parameter_two : 20
+});
+
+//Function resource, the returned object will be merge to configuration object
+configLoader.load(function(actualConfigObject) {
+    // in "actualConfigObject" we have parameters that we loaded previously, so You can perform simple conditions and return suitable for you object
+    
+    return {
+        "argv": process.argv,
+        "any_parameter_three" : 30
+    }
+});
+
+var config = configLoader.getConfig(); //when you call getConfig the returned object is frozen
+```
+
+## Method "transformToSingleton"
+Method "transformToSingleton" transform the whole module to singleton where each call require('app-config-node') will return config object with yours parameters.
+
+This Functionality is good when you want to get your config in whole application with the very simple way, but it is not recommended, for example, you should use Dependency Injection to provide your configuration.
+
+```javascript
+const configLoaderClass = require('app-config-node');
+const configLoader = new configLoaderClass();
+
+configLoader.load({any_parameter_one : 10});
+
+var configBag = configLoader.transformToSingleton();
+
+// Now when you require the 'app-config-node' module, will be returned to you the configuration object
+var configBagFromSingleton = require('app-config-node');
+console.log(configBagFromSingleton);
+// {any_parameter_one : 10}
+```
+
+**configBag === configBagFromSingleton** will be **true**
+
+Shortest way
+```javascript
+const configLoaderClass = require('app-config-node');
+const configBag = new configLoaderClass().load('file.yml').transformToSingleton();
+```
 ##Important information
 
-For increase security, avoid problems and enforce good practices, after initialization Config object is freeze, this mean that you can't modify configuration when your aplication is running. Any attemps will trow exception.
+For increase security, avoid problems and enforce good practices, when you call getConfig config object is frozen, this mean that you can't modify configuration when your application is running. Any attempts will trow exception.
 
 ##Module allow for flexible organization configuration files, examples:
 
 1. **Configuration schema files with sufix**
     
     ```javascript
-    const config = new Config(__dirname + `/config/config_${env}.json`);
+    const config = new ConfigLoader().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
     ```
     
     ```
@@ -113,15 +194,15 @@ For increase security, avoid problems and enforce good practices, after initiali
     ├─ ...
     ``` 
     
-    The file config/config.json inhert config_dev.json, config_prod.json files.
+    The file config/config.json inherits config_dev.json and config_prod.json file.
     
     *config/config.json*
     
     ```json
     {
        "imports": [
-           "routing.json",
-           "services.json"
+           {"resource": "routing.json"},
+           {"resource": "services.json"}
        ]
     }
     ```
@@ -131,8 +212,8 @@ For increase security, avoid problems and enforce good practices, after initiali
     ```json
     {
        "imports": [
-           "config.json",
-           "routing_dev.json"
+           {"resource": "config.json"},
+           {"resource": "routing_dev.json"}
        ],
        "db": {
            "host" : "localhost",
@@ -146,7 +227,7 @@ For increase security, avoid problems and enforce good practices, after initiali
     ```json
     {
        "imports": [
-           "config.json"
+           {"resource": "config.json"}
        ],
        "db": {
            "host" : "dbb",
@@ -158,7 +239,7 @@ For increase security, avoid problems and enforce good practices, after initiali
 2. **Folders for each environment**
     
     ```javascript
-    const config = new Config(__dirname + `/config/${env}/config.json`);
+    const config = new ConfigLoader().load(__dirname + `/config/${APP_ENV}/config.json`).getConfig();      
     ```
     
     ```
@@ -180,15 +261,15 @@ For increase security, avoid problems and enforce good practices, after initiali
     ├─ ...
     ``` 
 
-    The file config/default/config.json inhert dev/config.json, prod/config.json files.
+    The file config/default/config.json inherits dev/config.json and prod/config.json file.
 
     *config/default/config.json*
     
     ```json
     {
        "imports": [
-           "routing.json",
-           "security.json"
+           {"resource": "routing.json"},
+           {"resource": "security.json"}
        ]
     }
     ```
@@ -198,9 +279,9 @@ For increase security, avoid problems and enforce good practices, after initiali
     ```json
     {
        "imports": [
-           "../default/config.json",
-           "routing.json",
-           "security.json"
+           {"resource": "../default/config.json"},
+           {"resource": "routing.json"},
+           {"resource": "security.json"}
        ]
     }
     ```
@@ -208,7 +289,7 @@ For increase security, avoid problems and enforce good practices, after initiali
 3. **Semantic configuration**
 
     ```javascript
-    const config = new Config(__dirname + `/config/environments/${env}.json`);
+    const config = new ConfigLoader().load(__dirname + `/config/environments/${env}.json`).getConfig();  
     ```
     
     ```
@@ -235,20 +316,20 @@ For increase security, avoid problems and enforce good practices, after initiali
     ├─ ...
     ```
     
-    The file environments/default.json inhert environments/dev.json, environments/prod.json files.
+    The file environments/default.json inherits environments/dev.json and environments/prod.json file.
 
     *config/environments/default.json*
     
     ```json
     {
        "imports": [
-           "../modules/module1.json",
-           "../modules/module2.json",
-           "../modules/moduleN.json",
-           "../services/frontend.json",
-           "../services/backend.json",
-           "../services/security.json",
-           "../routing/default.json"
+            {"resource": "../modules/module1.json"},
+            {"resource": "../modules/module2.json"},
+            {"resource": "../modules/moduleN.json"},
+            {"resource": "../services/frontend.json"},
+            {"resource": "../services/backend.json"},
+            {"resource": "../services/security.json"},            
+            {"resource": "../routing/default.json"}
        ]
     }
     ```
@@ -258,8 +339,8 @@ For increase security, avoid problems and enforce good practices, after initiali
     ```json
     {
        "imports": [
-           "default.json",
-           "../routing/dev.json"
+           {"resource": "default.json"},
+           {"resource": "../routing/dev.json"}
        ]
     }
     ```
@@ -268,12 +349,12 @@ For increase security, avoid problems and enforce good practices, after initiali
 
 ##Absolute Path
 
-Configuation files can by import also from absolute path
+Configuration files can by import also from absolute path
 
 ```json
 {
    "imports": [
-       "/home/prod/app-configs/appName.json"
+      {"resource": "/home/prod/app-configs/appName.json"}
    ]
 }
 ```

@@ -1,0 +1,13 @@
+imports:
+    - { resource: "../routing/default.yml", "ignore_errors": false}
+    - { resource: "../services/utils.ini",  "ignore_errors": false}
+    - { resource: "../modules/security.ini", "ignore_errors": false}
+dbs:
+    master:
+        name: "hbq_db"
+        user: "master"
+    slave:
+        name: "hbq_db"
+        user: "slave"
+utils:
+    default_items_order: "asc"

@@ -1,0 +1,22 @@
+{
+    "imports" : [
+        {
+            "resource": "./config.yml",
+            "ignore_errors": false
+        }
+    ],
+    "dbs": {
+        "master": {
+            "host": "db_host_prod_master",
+            "user": "user_prod",
+            "password": "QWERTY",
+            "port": "3311"
+        },
+        "slave": {
+            "host": "db_host_prod_slave",
+            "user": "user_prod",
+            "password": "YTREWQ",
+            "port": "3312"
+        }
+    }
+}
