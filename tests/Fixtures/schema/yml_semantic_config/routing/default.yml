@@ -1,0 +1,15 @@
+routing:
+  homage:
+    path: "/homepage"
+    defaults:
+      _controller: App/Default
+      _format: json
+  article_show:
+    path: "/articles/{_locale}/{year}/{slug}.{_format}"
+    defaults:
+      _controller: AppBundle:Article:show
+      _format: html
+    requirements:
+      _locale: en|fr
+      _format: html|rss
+      year: "\\d+"

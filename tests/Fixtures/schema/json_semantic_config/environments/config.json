@@ -1,4 +1,4 @@
-{
+    {
     "imports" : [
         {
             "resource": "../routing/default.json",
@@ -18,6 +18,9 @@
             "name": "hbq_db"
         },
         "slave": {
+            "name": "hbq_db"
+        },
+        "slave2": {
             "name": "hbq_db"
         }
     },

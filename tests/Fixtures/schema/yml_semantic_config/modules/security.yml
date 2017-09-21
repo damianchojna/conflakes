@@ -1,0 +1,10 @@
+security:
+  firewalls:
+    main:
+      form_login:
+        login_path: login
+        check_path: login
+  blacklist:
+  - 192.168.0.110
+  - 192.168.0.120
+  - 192.168.0.130

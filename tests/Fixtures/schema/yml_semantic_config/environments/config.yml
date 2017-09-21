@@ -1,0 +1,16 @@
+imports:
+- resource: "../routing/default.yml"
+  ignore_errors: false
+- resource: "../services/utils.yml"
+  ignore_errors: false
+- resource: "../modules/security.yml"
+  ignore_errors: false
+dbs:
+  master:
+    name: hbq_db
+  slave:
+    name: hbq_db
+  slave2:
+    name: hbq_db
+utils:
+  default_items_order: asc

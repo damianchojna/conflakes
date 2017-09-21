@@ -9,5 +9,7 @@ dbs:
     slave:
         name: "hbq_db"
         user: "slave"
+    slave2:
+        name: "hbq_db"
 utils:
     default_items_order: "asc"

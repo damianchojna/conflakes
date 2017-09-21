@@ -1,0 +1,20 @@
+imports:
+- resource: "./config.yml"
+  ignore_errors: false
+- resource: "../routing/default.yml"
+  ignore_errors: false
+dbs:
+  master:
+    name: hbq_db_master
+    host: localhost
+    user: root
+    password: ''
+    port: '3306'
+  slave:
+    name: hbq_db_slave
+    host: localhost
+    user: root
+    password: ''
+    port: '3306'
+utils:
+  default_items_order: custom_order

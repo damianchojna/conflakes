@@ -102,6 +102,9 @@ describe('Config module', () => {
                     user: 'root',
                     password: '',
                     port: '3306'
+                },
+                slave2: {
+                    name: "hbq_db"
                 }
             },
             routing: {
@@ -154,6 +157,11 @@ describe('Config module', () => {
 
         it('Should import semantic json format config', () => {
             config.load(__dirname + '/../../../tests/Fixtures/schema/json_semantic_config/environments/dev.json');
+            expect(config.getConfig().all()).to.deep.equal(semanticDevConfig);
+        });
+
+        it('Should import semantic yml format config', () => {
+            config.load(__dirname + '/../../../tests/Fixtures/schema/yml_semantic_config/environments/dev.yml');
             expect(config.getConfig().all()).to.deep.equal(semanticDevConfig);
         });
 
