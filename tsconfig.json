@@ -5,14 +5,15 @@
         "sourceMap": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "sourceRoot": "src",
-        "outDir": "release",
-        "typeRoots": ["typings"],
-        "baseUrl": "typings",
-        "types": [
-            "mocha"
-        ]
+        "removeComments": true,
+        "declaration": false,
+        "outDir": "release"
     },
+    "include": [
+        "src/**/*.ts",
+        "tests/**/*.ts",
+        "typings/**/*.ts"
+    ],
     "exclude": [
         "node_modules"
     ]

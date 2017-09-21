@@ -32,9 +32,10 @@ export class YamlLoader extends BaseFileLoaderAbstract {
             imports = parsedFile['imports'];
             delete parsedFile['imports'];
         }
-        _.merge(this.container, parsedFile);
 
         this.importFromArray(imports, resource);
+
+        _.merge(this.container, parsedFile);
     }
 
 }

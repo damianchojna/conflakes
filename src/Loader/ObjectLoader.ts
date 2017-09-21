@@ -19,9 +19,11 @@ export class ObjectLoader extends BaseFileLoaderAbstract {
             imports = resource['imports'];
             delete resource['imports'];
         }
+
+        this.importFromArray(imports, 'object');
+
         _.merge(this.container, resource);
 
-        this.importFromArray(imports, 'object')
     }
 
 }

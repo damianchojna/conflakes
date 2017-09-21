@@ -1,3 +1,10 @@
+2.0.2 / 2017-02-12
+------------------
+
+- Improved error inheritance config for ymlLoader, objectLoader, IniLoader, FunctionLoader
+- Remove comments in *.js files
+- Modification tsconfig.json
+
 2.0.0 / 2017-02-12
 ------------------
 

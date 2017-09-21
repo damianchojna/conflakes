@@ -52,7 +52,6 @@ describe('Config module', () => {
                 "false": false,
                 "no": "no",
                 "none": "none",
-                // "null": null,
                 "off": "off",
                 "on": "on",
                 "true": true,
@@ -172,10 +171,8 @@ describe('Config module', () => {
             }).to.throw(Error, /Configuration property.*is not defined/);
         });
         it('Should throw exception when someone try modify config properties', () => {
-            //when
             config.load(__dirname + '/../../../tests/Fixtures/schema/mixed_semantic_config/environments/dev.json');
             var dbsMaster = config.getConfig().get('dbs.master');
-            //then
             expect(() => {
                 dbsMaster.newParam = 'someValue';
             }).to.throw(Error, /Can't add property newParam, object is not extensible.*/);

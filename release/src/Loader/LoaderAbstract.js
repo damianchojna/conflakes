@@ -7,9 +7,6 @@ class LoaderAbstract {
     setResolver(resolver) {
         this.resolver = resolver;
     }
-    /**
-     * Import resources defined in resource
-     */
     import(resource, type = null) {
         return this.resolve(resource, type).load(resource, type);
     }

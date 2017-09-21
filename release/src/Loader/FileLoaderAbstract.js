@@ -36,7 +36,6 @@ class FileLoaderAbstract extends LoaderAbstract_1.LoaderAbstract {
                 throw e;
             }
             if (!ignoreErrors) {
-                // prevent embedded imports from nesting multiple exceptions
                 if (e instanceof FileLoaderLoadError_1.FileLoaderLoadError) {
                     throw e;
                 }

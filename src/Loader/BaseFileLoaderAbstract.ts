@@ -3,7 +3,7 @@ import {FileLoaderAbstract} from "./FileLoaderAbstract";
 
 export abstract class BaseFileLoaderAbstract extends FileLoaderAbstract {
 
-    protected container:Object; //@TODO a może objekt ?
+    protected container:Object;
 
     public constructor(container:Object) {
         super();

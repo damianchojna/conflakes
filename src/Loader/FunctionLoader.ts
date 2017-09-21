@@ -25,9 +25,11 @@ export class FunctionLoader extends BaseFileLoaderAbstract {
             imports = resource['imports'];
             delete resource['imports'];
         }
+
+        this.importFromArray(imports, 'function');
+
         _.merge(this.container, resource);
 
-        this.importFromArray(imports, 'function')
     }
 
 }

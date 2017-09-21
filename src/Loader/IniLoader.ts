@@ -32,9 +32,11 @@ export class IniLoader extends BaseFileLoaderAbstract {
             imports = parsedFile['imports'];
             delete parsedFile['imports'];
         }
+
+        this.importFromArray(imports, resource);
+
         _.merge(this.container, parsedFile);
 
-        this.importFromArray(imports, resource)
     }
 
 }
