@@ -1,0 +1,10 @@
+{
+  "dbs": {
+    "master": {
+      "name": "hbq_db"
+    },
+    "slave": {
+      "name": "hbq_db"
+    }
+  }
+}

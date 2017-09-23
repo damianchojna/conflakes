@@ -1,0 +1,6 @@
+{
+  "dbs": {
+    "master": {
+      "name": "custom"
+    }
+  }

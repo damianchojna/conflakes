@@ -1,9 +1,14 @@
-2.1.0 / 2017-02-12
+2.2.0 / 2017-09-23
+------------------
+
+- Support yml, ini for dist functionality.
+
+2.1.0 / 2017-09-21
 ------------------
 
 - Add tests for *.yml config files
 
-2.0.2 / 2017-02-12
+2.0.2 / 2017-09-21
 ------------------
 
 - Improved error inheritance config for ymlLoader, objectLoader, IniLoader, FunctionLoader

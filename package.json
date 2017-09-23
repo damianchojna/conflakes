@@ -1,6 +1,6 @@
 {
   "name": "app-config-node",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Manage load configuration, dependent on the environment with the ability to import config files defined in the config files",
   "main": "./release/src/module.js",
   "private": false,
