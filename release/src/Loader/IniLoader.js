@@ -1,7 +1,7 @@
 "use strict";
 const _ = require("lodash");
 const p = require("path");
-const ini = require("ini-config-parser");
+const ini = require("ini");
 const BaseFileLoaderAbstract_1 = require("./BaseFileLoaderAbstract");
 class IniLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
     supports(resource, type = null) {

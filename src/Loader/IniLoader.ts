@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as p from 'path';
-import * as ini from 'ini-config-parser';
+import * as ini from 'ini';
 import {BaseFileLoaderAbstract} from "./BaseFileLoaderAbstract";
 
 export class IniLoader extends BaseFileLoaderAbstract {

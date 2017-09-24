@@ -1,6 +1,11 @@
 2.2.1 / 2017-09-24
 ------------------
 
+- Remove package ini-config-parser add ini
+
+2.2.1 / 2017-09-24
+------------------
+
 - Fix stringify yml, ini for dist functionality.
 
 2.2.0 / 2017-09-23
