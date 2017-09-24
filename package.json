@@ -1,6 +1,6 @@
 {
   "name": "app-config-node",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Manage load configuration, dependent on the environment with the ability to import config files defined in the config files",
   "main": "./release/src/module.js",
   "private": false,
@@ -20,7 +20,7 @@
     "sinon": "^1.17.6"
   },
   "dependencies": {
-    "ini-config-parser": "^1.0.2",
+    "ini": "^1.3.4",
     "js-yaml": "^3.7.0",
     "lodash": "^4.17.2"
   },

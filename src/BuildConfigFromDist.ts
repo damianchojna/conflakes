@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import * as p from 'path';
 import * as  _ from 'lodash';
-import * as ini from 'ini-config-parser';
+import * as ini from 'ini';
 import * as yml from 'js-yaml';
 
 export class BuildConfigFromDist {
@@ -14,10 +14,10 @@ export class BuildConfigFromDist {
     }
 
     public static readonly parsers = {
-        '.ini'  : ini.parse,
-        '.yml'  : yml.safeLoad,
-        '.yaml' : yml.safeLoad,
-        '.json' : JSON.parse
+        '.ini'  : { parse: ini.parse,    stringify: ini.stringify},
+        '.yml'  : { parse: yml.safeLoad, stringify: yml.safeDump },
+        '.yaml' : { parse: yml.safeLoad, stringify: yml.safeDump },
+        '.json' : { parse: JSON.parse,   stringify: JSON.stringify }
     };
 
     public merge(inputFile: string): void {
@@ -35,7 +35,7 @@ export class BuildConfigFromDist {
         }
 
         var merged = _.merge(inputObject, outputObject);
-        fs.writeFileSync(outputFile, JSON.stringify(merged));
+        fs.writeFileSync(outputFile, BuildConfigFromDist.parsers[p.extname(inputFile)].stringify(merged));
     }
 
     private parseFile(path: string): Object {
@@ -47,7 +47,7 @@ export class BuildConfigFromDist {
         try {
             const content = fs.readFileSync(path, 'utf8');
 
-            return BuildConfigFromDist.parsers[ext](content);
+            return BuildConfigFromDist.parsers[ext].parse(content);
         } catch (e) {
             throw new Error(BuildConfigFromDist.errorMessages.problemWithFile + path)
         }

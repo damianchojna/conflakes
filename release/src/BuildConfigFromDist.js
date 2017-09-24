@@ -2,7 +2,7 @@
 const fs = require("fs");
 const p = require("path");
 const _ = require("lodash");
-const ini = require("ini-config-parser");
+const ini = require("ini");
 const yml = require("js-yaml");
 class BuildConfigFromDist {
     merge(inputFile) {
@@ -16,7 +16,7 @@ class BuildConfigFromDist {
             var outputObject = this.parseFile(outputFile);
         }
         var merged = _.merge(inputObject, outputObject);
-        fs.writeFileSync(outputFile, JSON.stringify(merged));
+        fs.writeFileSync(outputFile, BuildConfigFromDist.parsers[p.extname(inputFile)].stringify(merged));
     }
     parseFile(path) {
         const ext = p.extname(path);
@@ -25,7 +25,7 @@ class BuildConfigFromDist {
         }
         try {
             const content = fs.readFileSync(path, 'utf8');
-            return BuildConfigFromDist.parsers[ext](content);
+            return BuildConfigFromDist.parsers[ext].parse(content);
         }
         catch (e) {
             throw new Error(BuildConfigFromDist.errorMessages.problemWithFile + path);
@@ -53,10 +53,10 @@ BuildConfigFromDist.errorMessages = {
     notValidDistFileName: 'Given file name does not contain the "dist" word: '
 };
 BuildConfigFromDist.parsers = {
-    '.ini': ini.parse,
-    '.yml': yml.safeLoad,
-    '.yaml': yml.safeLoad,
-    '.json': JSON.parse
+    '.ini': { parse: ini.parse, stringify: ini.stringify },
+    '.yml': { parse: yml.safeLoad, stringify: yml.safeDump },
+    '.yaml': { parse: yml.safeLoad, stringify: yml.safeDump },
+    '.json': { parse: JSON.parse, stringify: JSON.stringify }
 };
 exports.BuildConfigFromDist = BuildConfigFromDist;
 //# sourceMappingURL=BuildConfigFromDist.js.map

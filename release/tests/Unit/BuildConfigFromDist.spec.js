@@ -3,6 +3,7 @@ const fs = require('fs');
 const p = require('path');
 const expect = require('chai').expect;
 const sinon = require('sinon');
+const yml = require('js-yaml');
 const { BuildConfigFromDist } = require('../../src/BuildConfigFromDist');
 describe('BuildConfigFromDist', () => {
     let distBuild;
@@ -78,23 +79,14 @@ describe('BuildConfigFromDist', () => {
         it('Should correct merge dist and user config', () => {
             let inputFile = p.normalize(__dirname + '/../../../tests/Fixtures/dist/yml/valid/config.dist.yml');
             distBuild.merge(inputFile);
-            expect(JSON.parse(writeFileSyncMock.args[0][1])).to.deep.equal({
-                "dbs": {
-                    "master": {
-                        "name": "custom"
-                    },
-                    "slave": {
-                        "name": "hbq_db"
-                    }
-                }
-            });
+            let output = writeFileSyncMock.args[0][1];
+            expect(output).to.deep.equal("dbs:\n  master:\n    name: custom\n  slave:\n    name: hbq_db\n");
         });
         it("Should correct merge dist and user config when do not have user config file", () => {
             let inputFile = p.normalize(__dirname + '/../../../tests/Fixtures/dist/yml/valid.dist.yml');
             distBuild.merge(inputFile);
-            expect(JSON.parse(writeFileSyncMock.args[0][1])).to.deep.equal({
-                "one": "1"
-            });
+            let output = writeFileSyncMock.args[0][1];
+            expect(output).to.deep.equal("one: '1'\n");
         });
     });
 });
