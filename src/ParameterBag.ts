@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
 
-export class ParameterBag {
 
-    public constructor(params:Object) {
-        var parameters = params;
+export class ParameterBag {
+    private parameters:object;
+
+    public constructor(params:object) {
+        this.parameters = params;
     }
 
     public get = function(property: string, defaultParam?: any): any {
@@ -11,7 +13,7 @@ export class ParameterBag {
             throw new Error("Parameter must be non empty string");
         }
 
-        let value = _.get(parameters, property, defaultParam);
+        let value = _.get(this.parameters, property, defaultParam);
 
         if (!_.isUndefined(value)) {
             return value
@@ -25,10 +27,10 @@ export class ParameterBag {
     }
 
     public has = function(property: string): boolean {
-        return _.has(parameters, property);
+        return _.has(this.parameters, property);
     };
 
     public all = function(): Object {
-        return parameters;
+        return this.parameters;
     }
 }

@@ -6,7 +6,7 @@ class ParameterBag {
             if (!_.isString(property) || !property) {
                 throw new Error("Parameter must be non empty string");
             }
-            let value = _.get(parameters, property, defaultParam);
+            let value = _.get(this.parameters, property, defaultParam);
             if (!_.isUndefined(value)) {
                 return value;
             }
@@ -16,12 +16,12 @@ class ParameterBag {
             throw new Error(`Configuration property "${property}" is not defined`);
         };
         this.has = function (property) {
-            return _.has(parameters, property);
+            return _.has(this.parameters, property);
         };
         this.all = function () {
-            return parameters;
+            return this.parameters;
         };
-        var parameters = params;
+        this.parameters = params;
     }
 }
 exports.ParameterBag = ParameterBag;
