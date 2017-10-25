@@ -10,7 +10,7 @@ class YamlLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
     load(resource, type = null) {
         var content = this.getFileContent(resource);
         try {
-            var parsedFile = yml.safeLoad(content);
+            var parsedFile = yml.load(content);
         }
         catch (e) {
             throw new Error(`Parse Error: ${resource}\n${e.toString()}`);

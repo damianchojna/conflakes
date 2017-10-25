@@ -35,32 +35,21 @@ describe('Config module', () => {
 
         var iniTypes = {
             types: {
-                "0": 0,
-                "1": 1,
-                "12": 12,
-                "100.0": 100,
-                "255": 0,
-                "-10,100.1": "-10,100.1",
-                "-10100.1": -10100.1,
-                "-12": -12,
-                "-120.0":  -120,
-                "0777": 777,
-                "0b0110": 0,
                 "11112222333344445555": "1111,2222,3333,4444,5555",
-                "12_comment": 12,
-                "12_string": "12",
-                "12_string_comment": "12",
-                "12_string_comment_again": "12",
                 "constant": "PHP_VERSION",
                 "false": false,
                 "no": "no",
                 "none": "none",
-                // "null": null,
                 "off": "off",
                 "on": "on",
                 "true": true,
-                "true_comment": true,
-                "yes": "yes"
+                "yes": "yes",
+            }
+        };
+
+        var ymlTypes = {
+            types: {
+                regexp: /pattern/gim
             }
         };
 
@@ -72,6 +61,11 @@ describe('Config module', () => {
         it('Check types from ini', () => {
             config.load(__dirname + '/../../../tests/Fixtures/types/ini/types.ini');
             expect(config.getConfig().all()).to.deep.equal(iniTypes);
+        });
+
+        it('Check types from yml', () => {
+            config.load(__dirname + '/../../../tests/Fixtures/types/yaml/types.yml');
+            expect(config.getConfig().all()).to.deep.equal(ymlTypes);
         });
     });
 
@@ -129,7 +123,7 @@ describe('Config module', () => {
                 }
             },
             utils: {
-                max_items_per_page: 10,
+                max_items_per_page: "10",
                 default_items_order: "custom_order"
             },
             security: {

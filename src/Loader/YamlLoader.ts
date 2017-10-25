@@ -22,7 +22,7 @@ export class YamlLoader extends BaseFileLoaderAbstract {
         var content = this.getFileContent(resource);
 
         try {
-            var parsedFile = yml.safeLoad(content);
+            var parsedFile = yml.load(content);
         } catch (e) {
             throw new Error(`Parse Error: ${resource}\n${e.toString()}`)
         }

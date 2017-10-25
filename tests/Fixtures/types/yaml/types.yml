@@ -1,0 +1,2 @@
+types:
+  regexp: !!js/regexp /pattern/gim
