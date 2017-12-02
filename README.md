@@ -1,4 +1,6 @@
-#Config Node
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/11004386/33520590-58a43314-d7be-11e7-8226-112e4db6ec1a.png" alt="Npm config module conflakes"/>
+</p>
 
 Manage configuration, dependent on the environment with the ability to import config files defined in the config files.
 
