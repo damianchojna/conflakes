@@ -1,15 +1,13 @@
 'use strict';
 const expect = require('chai').expect;
-import * as path from 'path';
 import {FileLoaderImportCircularReferenceError} from "../../src/Error/FileLoaderImportCircularReferenceError";
 import {FileLoaderLoadError} from "../../src/Error/FileLoaderLoadError";
+import {ConflakesLoader} from "../../src/ConflakesLoader";
 
 describe('Config module', () => {
-    var config: Object;
+    var config;
     beforeEach(function () {
-        delete require.cache[require.resolve(path.join('..', '..', 'src', 'module'))];
-        let ConfigModule = require(path.join('..', '..', 'src', 'module'));
-        config = new ConfigModule();
+        config = new ConflakesLoader();
     });
 
     describe('Check types', () => {
@@ -58,6 +56,11 @@ describe('Config module', () => {
             expect(config.getConfig().all()).to.deep.equal(jsonTypes);
         });
 
+        it('Check types from js', () => {
+            config.load(__dirname + '/../../../tests/Fixtures/types/js/types.js');
+            expect(config.getConfig().all()).to.deep.equal(jsonTypes);
+        });
+
         it('Check types from ini', () => {
             config.load(__dirname + '/../../../tests/Fixtures/types/ini/types.ini');
             expect(config.getConfig().all()).to.deep.equal(iniTypes);
@@ -66,17 +69,6 @@ describe('Config module', () => {
         it('Check types from yml', () => {
             config.load(__dirname + '/../../../tests/Fixtures/types/yaml/types.yml');
             expect(config.getConfig().all()).to.deep.equal(ymlTypes);
-        });
-    });
-
-    describe('Transform to Singleton', () => {
-        it('Should return previus config from require', () => {
-            let configBag = config.load(__dirname + '/../../../tests/Fixtures/schema/mixed_semantic_config/environments/dev.json').transformToSingleton();
-
-            let singletonConfigBag = require(path.join('..', '..', 'src', 'module'));
-
-            expect(configBag === singletonConfigBag).to.equal(true);
-            expect(configBag.all()).to.deep.equal(singletonConfigBag.all());
         });
     });
 
@@ -176,9 +168,21 @@ describe('Config module', () => {
                 config.load(__dirname + '/../../../tests/Fixtures/bad_schema/not_exist_file/main.json');
             }).to.throw(Error, /no such file or directory/);
         });
+
+        it('Should not throw Error when try load js module without defined export', () => {
+            expect(() => {
+                config.load(__dirname + '/../../../tests/Fixtures/bad_schema/js/moduleExportWithoutExports.js');
+            }).to.not.throw();
+        });
+
+        it('Should throw Error when try load js module that exports non a object', () => {
+            expect(() => {
+                config.load(__dirname + '/../../../tests/Fixtures/bad_schema/js/moduleExportNotAObject.js');
+            }).to.throw(Error, /do not export object/);
+        });
     });
 
-    describe('ParameterBag "get" method', () => {
+    describe('Config "get" method', () => {
         it('Should get property', () => {
             config.load(__dirname + '/../../../tests/Fixtures/schema/mixed_semantic_config/environments/dev.json');
             expect(config.getConfig().get('dbs.master.name')).to.equal('hbq_db_master');
@@ -200,7 +204,7 @@ describe('Config module', () => {
         });
     });
 
-    describe('ParameterBag "all" method', () => {
+    describe('Config "all" method', () => {
         it('Should return correct object', () => {
             var configSchema = {
                 utils: {

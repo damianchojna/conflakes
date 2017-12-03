@@ -4,3 +4,4 @@ typings
 node_modules
 config
 **/*js.map
+npm-debug.log

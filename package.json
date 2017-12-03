@@ -1,39 +1,54 @@
 {
   "name": "conflakes",
-  "version": "2.4.0",
-  "description": "Manage load configuration, dependent on the environment with the ability to import config files defined in the config files",
-  "main": "./release/src/module.js",
+  "description": "Manager the configuration, may be depending on the environment, with the ability to import another config files defined inside themselves.",
+  "version": "3.0.2",
+  "author": "Damian Chojna",
+  "license": "MIT",
   "private": false,
   "readmeFilename": "README.md",
+  "main": "./dist/src/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "mocha ./release/tests/ --recursive"
+    "prepublish": "npm run tsc",
+    "tsc": "tsc",
+    "test": "mocha ./dist/tests/ --recursive"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/damianchojna/config-node.git"
   },
-  "author": "Damian Chojna",
-  "license": "MIT",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
-    "sinon": "^1.17.6"
-  },
-  "dependencies": {
-    "ini": "^1.3.4",
-    "js-yaml": "^3.10.0",
-    "lodash": "^4.17.2"
-  },
   "bin": {
     "build-dist": "bin/build-dist.js"
   },
+  "dependencies": {
+    "ini": "^1.3.5",
+    "js-yaml": "^3.10.0",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.54",
+    "chai": "^3.5.0",
+    "mocha": "^3.5.3",
+    "sinon": "^1.17.7",
+    "typescript": "^2.6.2"
+  },
   "keywords": [
-    "app",
-    "config",
-    "configuration",
     "conf",
+    "config",
     "settings",
+    "properties",
+    "config-node",
+    "node-config",
+    "configuration",
+    "configuration loader",
     "env",
-    "properties"
+    "json",
+    "yaml",
+    "yml",
+    "ini",
+    "js",
+    "module",
+    "environment"
   ]
 }

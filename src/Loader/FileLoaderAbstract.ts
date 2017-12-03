@@ -9,7 +9,7 @@ export abstract class FileLoaderAbstract extends LoaderAbstract {
 
     static loading:string[] = [];
 
-    public import(resource:string, type?:string|null = null, ignoreErrors?:boolean = false, sourceResource?:string|null = null):void {
+    public import(resource:string, type:string|null = null, ignoreErrors:boolean = false, sourceResource:string|null = null):void {
         try {
             var loader = this.resolve(resource, type);
 
@@ -53,7 +53,7 @@ export abstract class FileLoaderAbstract extends LoaderAbstract {
         }
     }
 
-    public importFromArray(imports:Array, sourceResource:string) {
+    public importFromArray(imports: {resource: string, ignore_errors: boolean, type: string}[], sourceResource:string) {
         imports.forEach((importConfig) => {
             var resource = _.isUndefined(importConfig.resource) ? null : importConfig.resource;
             var ignore_errors = _.isUndefined(importConfig.ignore_errors) ? false : importConfig.ignore_errors;

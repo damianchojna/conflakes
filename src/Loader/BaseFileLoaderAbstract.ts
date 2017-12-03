@@ -1,11 +1,10 @@
-import {ConfigContainer} from "../ParameterBag";
 import {FileLoaderAbstract} from "./FileLoaderAbstract";
 
 export abstract class BaseFileLoaderAbstract extends FileLoaderAbstract {
 
-    protected container:Object;
+    protected container: object;
 
-    public constructor(container:Object) {
+    public constructor(container: object) {
         super();
         this.container = container;
     }

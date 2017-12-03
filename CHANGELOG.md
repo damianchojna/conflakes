@@ -1,3 +1,13 @@
+3.0.0 / 2017-12-03
+------------------
+
+- Importing configuration from *.js files(module that export object)
+- Generate typescript definitions for conflakes
+- Upgrade modules in package.json
+- Typescript syntax repair
+- Add typescript definitions for node
+- Update README.md
+
 2.3.3 / 2017-10-25
 ------------------
 

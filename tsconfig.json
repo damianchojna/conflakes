@@ -6,8 +6,8 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "removeComments": true,
-        "declaration": false,
-        "outDir": "release"
+        "declaration": true,
+        "outDir": "dist"
     },
     "include": [
         "src/**/*.ts",

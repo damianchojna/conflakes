@@ -6,5 +6,5 @@ export interface LoaderResolverInterface {
      *
      * @return LoaderInterface|false The loader or false if none is able to load the resource
      */
-    resolve(resource: any, type: string|null = null): LoaderInterface|boolean;
+    resolve(resource: any, type: string|null): LoaderInterface|boolean;
 }

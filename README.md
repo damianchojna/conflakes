@@ -2,24 +2,25 @@
   <img src="https://user-images.githubusercontent.com/11004386/33520590-58a43314-d7be-11e7-8226-112e4db6ec1a.png" alt="Npm config module conflakes"/>
 </p>
 
-Manage configuration, dependent on the environment with the ability to import config files defined in the config files.
+Manager the configuration, may be depending on the environment, with the ability to import another config files defined inside themselves.
 
 Possibility to load configuration from:
 * Json files
 * Yaml files
 * Ini files
+* JS files(modules that export object)
 * Functions
 * Objects
 
-##Instalation:
+## Instalation:
 
-1. **Add Dependency**
+1. **Add dependency**
 
     ```bash
-    npm install app-config-node --save
+    npm install conflakes --save
     ```
 
-2. **The next step is create config structure files.**
+2. **The next step is create config structure files, example:**
 
     ```
     application/
@@ -30,15 +31,15 @@ Possibility to load configuration from:
     └─ app.js
     ```
 
-3. **Add to your app this piece of code**
+3. **Add to your app.js this piece of code**
 
     *typescript2*
     
     ```javascript
     const APP_ENV = process.env.NODE_ENV || 'dev';
  
-    import * as ConfigLoader from 'app-config-node';
-    const configBag = new ConfigLoader().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
+    import * as Conflakes from 'conflakes';
+    const config = new Conflakes().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
 
     ```
     
@@ -47,21 +48,20 @@ Possibility to load configuration from:
     ```javascript
     const APP_ENV = process.env.NODE_ENV || 'dev';
  
-    const ConfigLoader = require('app-config-node');
-    const configBag = new ConfigLoader().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
+    const Conflakes = require('conflakes');
+    const config = new Conflakes().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
     ```
 
     If you want to use specyfic format, simply give the file with appropriate extension
     * .json
     * .yml
     * .ini
+    * .js
     
-## How to use configBag, method "GetConfig" on ConfigLoader, and methods "get", "all" on configBag :
+## How to use config:
 
 1. "get" method returns a parameter by name.
 
-    Example config in example_config.json file
-    
     ```json
     {
           "dbs" : {
@@ -75,29 +75,22 @@ Possibility to load configuration from:
           ]
     }
     ``` 
-       
-    ```javascript
-    const ConfigLoaderClass = require('app-config-node');
-    const ConfigLoader = new ConfigLoaderClass().load('example_config.json');
-    const configBag = ConfigLoader.getConfig();
-    ```
-    
     To get host to database:
     
     ```javascript
-    configBag.get('dbs.master.host');
+    config.get('dbs.master.host');
     ``` 
     
     To get first element of the "blacklist" array:
     
     ```javascript
-    configBag.get('blacklist[0]');
+    config.get('blacklist[0]');
     ``` 
     
     If the parameter does not exist in configuration it will be throw exception, To avoid this you can use default parameter.
     
     ```javascript
-    configBag.get('dbs.master.host', null);
+    config.get('dbs.master.host', null);
     ``` 
     
     Now if the parameter does not exist it will return null.
@@ -106,35 +99,35 @@ Possibility to load configuration from:
    
 2. "all" method
 
-   Method "all" return all configuration
+   Method "all" return all configuration object
    ```javascript
-   configBag.all();
+   config.all();
    ``` 
     
 ## How to use resource loaders, method "load":
 
-You can use resources like yml, ini, json files and objects or functions.
+You can use resources like yml, ini, json, js(mocdule) files and objects or functions.
 You must keep in mind that each call "load" loads the object which it is merging to the previous configuration if there are duplicate keys in different resources that will be overwritten by the last resource.
 
 **The "Object" and "Function" resource loaders are very helpful you can add to you config for example parameters from "command line arguments" or "environments variables"**
 ```javascript
-const configLoaderClass = require('app-config-node');
-const configLoader = new configLoaderClass();
+const Conflakes = require('conflakes');
+const conflakes = new Conflakes();
 
 // You can load serveral files, of course the files inside with key "imports":[ ] can import other files
-configLoader.load('file.yml'); // Yaml file resource
-configLoader.load('file.ini'); // Ini File resource
-configLoader.load('file.json'); // Json File resource
+conflakes.load('file.yml'); // Yaml file resource
+conflakes.load('file.ini'); // Ini File resource
+conflakes.load('file.json'); // Json File resource
 
 // Object resource, the object will be merge to configuration object
-configLoader.load({
+conflakes.load({
     env: process.env.NODE_ENV,
     any_parameter_one : 10,
     any_parameter_two : 20
 });
 
 //Function resource, the returned object will be merge to configuration object
-configLoader.load(function(actualConfigObject) {
+conflakes.load(function(actualConfigObject) {
     // in "actualConfigObject" we have parameters that we loaded previously, so You can perform simple conditions and return suitable for you object
     
     return {
@@ -143,45 +136,19 @@ configLoader.load(function(actualConfigObject) {
     }
 });
 
-var config = configLoader.getConfig(); //when you call getConfig the returned object is frozen
+var config = conflakes.getConfig(); //when you call getConfig the returned object is frozen
 ```
 
-## Method "transformToSingleton"
-Method "transformToSingleton" transform the whole module to singleton where each call require('app-config-node') will return config object with yours parameters.
-
-This Functionality is good when you want to get your config in whole application with the very simple way, but it is not recommended, for example, you should use Dependency Injection to provide your configuration.
-
-```javascript
-const configLoaderClass = require('app-config-node');
-const configLoader = new configLoaderClass();
-
-configLoader.load({any_parameter_one : 10});
-
-var configBag = configLoader.transformToSingleton();
-
-// Now when you require the 'app-config-node' module, will be returned to you the configuration object
-var configBagFromSingleton = require('app-config-node');
-console.log(configBagFromSingleton);
-// {any_parameter_one : 10}
-```
-
-**configBag === configBagFromSingleton** will be **true**
-
-Shortest way
-```javascript
-const configLoaderClass = require('app-config-node');
-const configBag = new configLoaderClass().load('file.yml').transformToSingleton();
-```
 ##Important information
 
-For increase security, avoid problems and enforce good practices, when you call getConfig config object is frozen, this mean that you can't modify configuration when your application is running. Any attempts will trow exception.
+For increase security, avoid problems and enforce good practices, when you call getConfig config object is frozen, this mean that you can't modify configuration when your application is running. Any attempts will trow exception. You can not freeze the configuration by calling conflakes.getConfig(false).
 
 ##Module allow for flexible organization configuration files, examples:
 
 1. **Configuration schema files with sufix**
     
     ```javascript
-    const config = new ConfigLoader().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
+    const config = new Conflakes().load(__dirname + `/config/config_${APP_ENV}.json`).getConfig();
     ```
     
     ```
@@ -241,7 +208,7 @@ For increase security, avoid problems and enforce good practices, when you call 
 2. **Folders for each environment**
     
     ```javascript
-    const config = new ConfigLoader().load(__dirname + `/config/${APP_ENV}/config.json`).getConfig();      
+    const config = new Conflakes().load(__dirname + `/config/${APP_ENV}/config.json`).getConfig();      
     ```
     
     ```
@@ -291,7 +258,7 @@ For increase security, avoid problems and enforce good practices, when you call 
 3. **Semantic configuration**
 
     ```javascript
-    const config = new ConfigLoader().load(__dirname + `/config/environments/${env}.json`).getConfig();  
+    const config = new Conflakes().load(__dirname + `/config/environments/${env}.json`).getConfig();  
     ```
     
     ```
@@ -365,7 +332,7 @@ Configuration files can by import also from absolute path
 
 ##Build *.dist.* files
 
-The genesis of the problem: While you work, you changes parameters in file config_dev.json for your individual preferences, example logins, passwords to databases, cache systems. When someone in your team adds to config_dev.json new parameters required by applicaton and when you pull this changes, you will have conficts and must manualy add this paramaters to your config_dev.json. To avoid this problem you must add config_dev.dist.json file and generate config_dev.json. So when someone add new parameters to config_dev.dist.json you will not have conflicts and you can merge new paramaters with simple command "npm run build-dist" and you will be automatically updated file config_dev.json
+The genesis of the problem: While you work, you changes parameters in file config_dev.json for your individual preferences, example logins, passwords to databases, cache systems. When someone in your team adds to config_dev.json new parameters required by applicaton and when you pull this changes, you will have conficts and must manualy add this paramaters to your config_dev.json. To avoid this problem you must add config_dev.dist.json file and generate config_dev.json. So when someone add new parameters to config_dev.dist.json you will not have conflicts and you can merge new paramaters with simple command "npm run build-dist" and you will be automatically updated file config_dev.json. **Now conflakes support json and yaml files for this feature.**
 
 
 1. **Example configuration schema with config_dev.dist.json file**

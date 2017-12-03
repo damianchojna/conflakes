@@ -1,12 +1,12 @@
 import {LoaderAbstract} from "./LoaderAbstract";
 import {FileLoaderLoadError} from "../Error/FileLoaderLoadError";
-import {ConfigContainer} from "../ParameterBag";
+import {LoaderResolverInterface} from "./LoaderResolverInterface";
 
 export class DelegatingLoader extends LoaderAbstract {
 
-    private configContainer:ConfigContainer;
+    private configContainer: object;
 
-    public constructor(resolver: LoaderResolverInterface, configContainter:ConfigContainer) {
+    public constructor(resolver: LoaderResolverInterface, configContainter: object) {
         super();
         this.resolver = resolver;
         this.configContainer = configContainter;
@@ -22,7 +22,7 @@ export class DelegatingLoader extends LoaderAbstract {
         return loader.load(resource, type);
     }
 
-    public getConfig():ConfigContainer {
+    public getConfig(): object {
         return this.configContainer;
     }
 

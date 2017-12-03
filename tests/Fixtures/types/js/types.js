@@ -1,0 +1,19 @@
+module.exports = {
+    types: {
+        true: true,
+        false: false,
+        null: null,
+        string: "STRING",
+        Int_12: 12,
+        Int_12_minus: -12,
+        string_12: "12",
+        int_0: 0,
+        int_1: 1,
+        octal_code: "0b0110",
+        string_comma: "1111,2222,3333,4444,5555",
+        array: [1111,2222,3333,4444,5555],
+        Hex_255: "0xFF",
+        Float: "-10100.1",
+        Float_E: "-1.2E2"
+    }
+};
