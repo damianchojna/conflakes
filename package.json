@@ -1,7 +1,7 @@
 {
   "name": "conflakes",
-  "description": "Manager the configuration, may be depending on the environment, with the ability to import another config files defined inside themselves.",
-  "version": "3.0.4",
+  "description": "Manager of the configuration, may be depending on the environment, with the ability to import another config files defined inside themselves.",
+  "version": "3.1.0",
   "author": "Damian Chojna",
   "license": "MIT",
   "private": false,
@@ -11,7 +11,7 @@
   "scripts": {
     "prepublish": "npm run tsc",
     "tsc": "tsc",
-    "test": "mocha ./dist/tests/ --recursive"
+    "test": "tsc;mocha ./dist/tests/ --recursive"
   },
   "repository": {
     "type": "git",

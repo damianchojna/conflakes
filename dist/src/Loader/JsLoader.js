@@ -7,7 +7,7 @@ class JsLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
     supports(resource, type = null) {
         return _.isString(resource) && resource && ('js' === type || p.extname(resource) === '.js');
     }
-    load(resource, type = null) {
+    load(resource, type = null, as) {
         let parsedFile;
         try {
             parsedFile = require(resource);
@@ -23,7 +23,7 @@ class JsLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
             delete parsedFile['imports'];
         }
         this.importFromArray(imports, resource);
-        _.merge(this.container, parsedFile);
+        _.merge(this.container, as ? _.set({}, as, parsedFile) : parsedFile);
     }
 }
 exports.JsLoader = JsLoader;

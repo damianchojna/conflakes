@@ -1,6 +1,6 @@
 imports:
     - { resource: "../routing/default.yml", "ignore_errors": false}
-    - { resource: "../services/utils.ini",  "ignore_errors": false}
+    - { resource: "../services/utils.ini",  "ignore_errors": false, as: utils}
     - { resource: "../modules/security.ini", "ignore_errors": false}
 dbs:
     master:

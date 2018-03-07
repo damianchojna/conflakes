@@ -1,7 +1,7 @@
 import { LoaderInterface } from "./LoaderInterface";
 import { LoaderResolverInterface } from "./LoaderResolverInterface";
 export declare abstract class LoaderAbstract implements LoaderInterface {
-    abstract load(resource: any, type: string): void;
+    abstract load(resource: any, type: string, as?: string | null): void;
     abstract supports(resource: any, type: string): boolean;
     protected resolver: any;
     getResolver(): LoaderResolverInterface;

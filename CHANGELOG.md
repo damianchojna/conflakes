@@ -1,3 +1,8 @@
+3.1.0 / 2017-12-03
+------------------
+
+- Can Importing configuration as specific key
+
 3.0.0 / 2017-12-03
 ------------------
 

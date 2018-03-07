@@ -6,7 +6,7 @@ class ObjectLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
     supports(resource, type = null) {
         return _.isPlainObject(resource) || (_.isPlainObject(resource) && 'object' === type);
     }
-    load(resource, type = null) {
+    load(resource, type = null, as) {
         var imports = [];
         if ('imports' in resource) {
             imports = resource['imports'];

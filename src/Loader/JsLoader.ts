@@ -16,7 +16,7 @@ export class JsLoader extends BaseFileLoaderAbstract {
      * @param type
      * @returns {any}
      */
-    public load(resource: any, type: string|null = null): void {
+    public load(resource: any, type: string|null = null, as: string|null): void {
 
         let parsedFile;
 
@@ -35,7 +35,7 @@ export class JsLoader extends BaseFileLoaderAbstract {
 
         this.importFromArray(imports, resource);
 
-        _.merge(this.container, parsedFile);
+        _.merge(this.container, as ? _.set({}, as, parsedFile) : parsedFile);
     }
 
 }

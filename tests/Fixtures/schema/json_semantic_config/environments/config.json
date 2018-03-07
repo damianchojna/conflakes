@@ -6,7 +6,8 @@
         },
         {
             "resource": "../services/utils.json",
-            "ignore_errors": false
+            "ignore_errors": false,
+            "as": "utils"
         },
         {
             "resource": "../modules/security.json",

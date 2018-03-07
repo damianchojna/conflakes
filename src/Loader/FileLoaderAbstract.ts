@@ -9,7 +9,7 @@ export abstract class FileLoaderAbstract extends LoaderAbstract {
 
     static loading:string[] = [];
 
-    public import(resource:string, type:string|null = null, ignoreErrors:boolean = false, sourceResource:string|null = null):void {
+    public import(resource:string, type:string|null = null, ignoreErrors:boolean = false, as: string|null = null, sourceResource:string|null = null):any {
         try {
             var loader = this.resolve(resource, type);
 
@@ -30,10 +30,11 @@ export abstract class FileLoaderAbstract extends LoaderAbstract {
             FileLoaderAbstract.loading[resource] = true;
 
             try {
-                var ret = loader.load(resource, type);
+                var ret = loader.load(resource, type, as);
             } finally {
                 delete FileLoaderAbstract.loading[resource];
             }
+
 
             return ret;
         } catch (e) {
@@ -53,13 +54,14 @@ export abstract class FileLoaderAbstract extends LoaderAbstract {
         }
     }
 
-    public importFromArray(imports: {resource: string, ignore_errors: boolean, type: string}[], sourceResource:string) {
+    public importFromArray(imports: {resource: string, ignore_errors: boolean, type: string, as: string}[], sourceResource:string) {
         imports.forEach((importConfig) => {
             var resource = _.isUndefined(importConfig.resource) ? null : importConfig.resource;
             var ignore_errors = _.isUndefined(importConfig.ignore_errors) ? false : importConfig.ignore_errors;
             var type = _.isUndefined(importConfig.type) ? null : importConfig.type;
+            var as = _.isUndefined(importConfig.as) ? null : importConfig.as;
 
-            this.import(resource, type, ignore_errors, sourceResource);
+            this.import(resource, type, ignore_errors, as, sourceResource);
         });
     }
 

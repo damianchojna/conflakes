@@ -8,7 +8,7 @@ class YamlLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
     supports(resource, type = null) {
         return _.isString(resource) && resource && (('yml' === type || 'yaml' === type) || ('.yml' === p.extname(resource) || '.yaml' === p.extname(resource)));
     }
-    load(resource, type = null) {
+    load(resource, type = null, as) {
         var content = this.getFileContent(resource);
         try {
             var parsedFile = yml.load(content);
@@ -22,7 +22,7 @@ class YamlLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
             delete parsedFile['imports'];
         }
         this.importFromArray(imports, resource);
-        _.merge(this.container, parsedFile);
+        _.merge(this.container, as ? _.set({}, as, parsedFile) : parsedFile);
     }
 }
 exports.YamlLoader = YamlLoader;

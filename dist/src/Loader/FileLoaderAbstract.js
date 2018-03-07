@@ -7,7 +7,7 @@ const fs = require("fs");
 const FileLoaderImportCircularReferenceError_1 = require("../Error/FileLoaderImportCircularReferenceError");
 const FileLoaderLoadError_1 = require("../Error/FileLoaderLoadError");
 class FileLoaderAbstract extends LoaderAbstract_1.LoaderAbstract {
-    import(resource, type = null, ignoreErrors = false, sourceResource = null) {
+    import(resource, type = null, ignoreErrors = false, as = null, sourceResource = null) {
         try {
             var loader = this.resolve(resource, type);
             resource = p.isAbsolute(resource) && _.isString(resource) ? p.normalize(resource) : p.normalize(p.join(p.dirname(sourceResource), resource));
@@ -25,7 +25,7 @@ class FileLoaderAbstract extends LoaderAbstract_1.LoaderAbstract {
             }
             FileLoaderAbstract.loading[resource] = true;
             try {
-                var ret = loader.load(resource, type);
+                var ret = loader.load(resource, type, as);
             }
             finally {
                 delete FileLoaderAbstract.loading[resource];
@@ -49,7 +49,8 @@ class FileLoaderAbstract extends LoaderAbstract_1.LoaderAbstract {
             var resource = _.isUndefined(importConfig.resource) ? null : importConfig.resource;
             var ignore_errors = _.isUndefined(importConfig.ignore_errors) ? false : importConfig.ignore_errors;
             var type = _.isUndefined(importConfig.type) ? null : importConfig.type;
-            this.import(resource, type, ignore_errors, sourceResource);
+            var as = _.isUndefined(importConfig.as) ? null : importConfig.as;
+            this.import(resource, type, ignore_errors, as, sourceResource);
         });
     }
     getFileContent(resource) {

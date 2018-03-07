@@ -12,7 +12,7 @@ export class ObjectLoader extends BaseFileLoaderAbstract {
      * import aby wcześniej jeszcze rozwiązać który loader powinien być użyty do załadowania rezourca
      *
      */
-    public load(resource: Object, type: string|null = null): void {
+    public load(resource: Object, type: string|null = null, as: string|null): void {
 
         var imports = [];
         if ('imports' in resource) {

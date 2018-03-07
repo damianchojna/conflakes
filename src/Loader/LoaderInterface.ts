@@ -3,7 +3,7 @@ import {LoaderResolverInterface} from "./LoaderResolverInterface";
 export interface LoaderInterface {
 
 
-    load(resource: any, type: string|null): void;
+    load(resource: any, type: string|null, as?: string|null): void;
 
     /**
      * Returns whether this class supports the given resource.

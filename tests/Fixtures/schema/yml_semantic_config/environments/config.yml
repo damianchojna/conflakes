@@ -3,6 +3,7 @@ imports:
   ignore_errors: false
 - resource: "../services/utils.yml"
   ignore_errors: false
+  as: "utils"
 - resource: "../modules/security.yml"
   ignore_errors: false
 dbs:
