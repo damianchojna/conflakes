@@ -116,7 +116,9 @@ describe('Config module', () => {
             },
             utils: {
                 max_items_per_page: "10",
-                default_items_order: "custom_order"
+                default_items_order: "custom_order",
+                extend_limit: "100",
+                extend_page: "1"
             },
             security: {
                 firewalls: {

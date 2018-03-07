@@ -1,3 +1,8 @@
+3.1.1 / 2017-12-03
+------------------
+
+- Importing configuration as specific key, with nesting imports
+
 3.1.0 / 2017-12-03
 ------------------
 

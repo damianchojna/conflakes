@@ -12,7 +12,7 @@ export class FunctionLoader extends BaseFileLoaderAbstract {
      * import aby wcześniej jeszcze rozwiązać który loader powinien być użyty do załadowania rezourca
      *
      */
-    public load(callback: Function, type: string|null = null): void {
+    public load(callback: Function, type: string|null = null, as: string|null): void {
 
         var resource = callback(this.container);
 
@@ -22,6 +22,14 @@ export class FunctionLoader extends BaseFileLoaderAbstract {
 
         var imports = [];
         if ('imports' in resource) {
+
+            for (let imp in resource['imports']) {
+                if (resource['imports'][imp]['as'] && as) {
+                    resource['imports'][imp]['as'] = as + '.' + resource['imports'][imp]['as']
+                } else if (as) {
+                    resource['imports'][imp]['as'] = as;
+                }
+            }
             imports = resource['imports'];
             delete resource['imports'];
         }

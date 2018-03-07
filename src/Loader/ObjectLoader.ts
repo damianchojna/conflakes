@@ -16,9 +16,18 @@ export class ObjectLoader extends BaseFileLoaderAbstract {
 
         var imports = [];
         if ('imports' in resource) {
+
+            for (let imp in resource['imports']) {
+                if (resource['imports'][imp]['as'] && as) {
+                    resource['imports'][imp]['as'] = as + '.' + resource['imports'][imp]['as']
+                } else if (as) {
+                    resource['imports'][imp]['as'] = as;
+                }
+            }
             imports = resource['imports'];
             delete resource['imports'];
         }
+
 
         this.importFromArray(imports, 'object');
 

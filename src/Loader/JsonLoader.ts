@@ -28,6 +28,14 @@ export class JsonLoader extends BaseFileLoaderAbstract {
 
         var imports = [];
         if ('imports' in parsedFile) {
+
+            for (let imp in parsedFile['imports']) {
+                if (parsedFile['imports'][imp]['as'] && as) {
+                    parsedFile['imports'][imp]['as'] = as + '.' + parsedFile['imports'][imp]['as']
+                } else if (as) {
+                    parsedFile['imports'][imp]['as'] = as;
+                }
+            }
             imports = parsedFile['imports'];
             delete parsedFile['imports'];
         }
