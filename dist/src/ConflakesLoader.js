@@ -24,7 +24,7 @@ class ConflakesLoader {
                 }
                 return this.frozen;
             }
-            return new Config_1.Config(this.deepFreeze(this.config));
+            return new Config_1.Config(this.config);
         };
         this.config = {};
         let resolver = new LoaderResolver_1.LoaderResolver([

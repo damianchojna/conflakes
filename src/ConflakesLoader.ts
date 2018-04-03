@@ -41,7 +41,7 @@ export class ConflakesLoader {
             }
             return this.frozen;
         }
-        return new Config(this.deepFreeze(this.config));
+        return new Config(this.config);
     }
 
     private deepFreeze(o: Object): object {
