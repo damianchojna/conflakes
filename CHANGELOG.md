@@ -1,3 +1,8 @@
+3.2.2 / 2019-07-18
+------------------
+
+- Custom yaml type, example: !!js/variable process.env.NODE_ENV
+
 3.1.1 / 2018-04-03
 ------------------
 

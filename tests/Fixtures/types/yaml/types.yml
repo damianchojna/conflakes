@@ -1,2 +1,3 @@
 types:
   regexp: !!js/regexp /pattern/gim
+  env:    !!js/variable process.env.NODE_ENV

@@ -5,6 +5,7 @@ const FileLoaderImportCircularReferenceError_1 = require("../../src/Error/FileLo
 const FileLoaderLoadError_1 = require("../../src/Error/FileLoaderLoadError");
 const ConflakesLoader_1 = require("../../src/ConflakesLoader");
 describe('Config module', () => {
+    process.env.NODE_ENV = 'test';
     var config;
     beforeEach(function () {
         config = new ConflakesLoader_1.ConflakesLoader();
@@ -44,7 +45,8 @@ describe('Config module', () => {
         };
         var ymlTypes = {
             types: {
-                regexp: /pattern/gim
+                regexp: /pattern/gim,
+                env: "test",
             }
         };
         it('Check types from json', () => {
@@ -182,7 +184,7 @@ describe('Config module', () => {
             var dbsMaster = config.getConfig().get('dbs.master');
             expect(() => {
                 dbsMaster.newParam = 'someValue';
-            }).to.throw(Error, /Can't add property newParam, object is not extensible.*/);
+            }).to.throw(Error);
         });
     });
     describe('Config "all" method', () => {

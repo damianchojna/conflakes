@@ -328,7 +328,12 @@ Configuration files can by import also from absolute path
 }
 ```
 
-
+##Additional functionalities
+1. Yaml
+    * Conflakes provide custom yaml type(https://yaml.org/type/) that allows you to read variables from a global node.js object, example:
+    ```  
+    env:    !!js/variable process.env.NODE_ENV
+    ```
 
 ##Build *.dist.* files
 

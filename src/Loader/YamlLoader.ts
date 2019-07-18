@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as p from 'path';
 import * as yml from 'js-yaml';
 import {BaseFileLoaderAbstract} from "./BaseFileLoaderAbstract";
+import GlobalVariableSchema from "./Extensions/Yaml/GlobalVariableType";
 
 export class YamlLoader extends BaseFileLoaderAbstract {
 
@@ -22,7 +23,7 @@ export class YamlLoader extends BaseFileLoaderAbstract {
         var content = this.getFileContent(resource);
 
         try {
-            var parsedFile = yml.load(content);
+            var parsedFile = yml.load(content, { schema: GlobalVariableSchema });
         } catch (e) {
             throw new Error(`Parse Error: ${resource}\n${e.toString()}`)
         }

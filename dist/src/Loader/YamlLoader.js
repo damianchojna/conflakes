@@ -4,6 +4,7 @@ const _ = require("lodash");
 const p = require("path");
 const yml = require("js-yaml");
 const BaseFileLoaderAbstract_1 = require("./BaseFileLoaderAbstract");
+const GlobalVariableType_1 = require("./Extensions/Yaml/GlobalVariableType");
 class YamlLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
     supports(resource, type = null) {
         return _.isString(resource) && resource && (('yml' === type || 'yaml' === type) || ('.yml' === p.extname(resource) || '.yaml' === p.extname(resource)));
@@ -11,7 +12,7 @@ class YamlLoader extends BaseFileLoaderAbstract_1.BaseFileLoaderAbstract {
     load(resource, type = null, as) {
         var content = this.getFileContent(resource);
         try {
-            var parsedFile = yml.load(content);
+            var parsedFile = yml.load(content, { schema: GlobalVariableType_1.default });
         }
         catch (e) {
             throw new Error(`Parse Error: ${resource}\n${e.toString()}`);

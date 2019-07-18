@@ -5,6 +5,9 @@ import {FileLoaderLoadError} from "../../src/Error/FileLoaderLoadError";
 import {ConflakesLoader} from "../../src/ConflakesLoader";
 
 describe('Config module', () => {
+
+    process.env.NODE_ENV = 'test';
+
     var config;
     beforeEach(function () {
         config = new ConflakesLoader();
@@ -47,7 +50,8 @@ describe('Config module', () => {
 
         var ymlTypes = {
             types: {
-                regexp: /pattern/gim
+                regexp: /pattern/gim,
+                env: "test",
             }
         };
 
@@ -202,7 +206,7 @@ describe('Config module', () => {
             //then
             expect(() => {
                 dbsMaster.newParam = 'someValue';
-            }).to.throw(Error, /Can't add property newParam, object is not extensible.*/);
+            }).to.throw(Error);
         });
     });
 
