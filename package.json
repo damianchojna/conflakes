@@ -1,7 +1,7 @@
 {
   "name": "conflakes",
   "description": "Manager of the configuration, may be depending on the environment, with the ability to import another config files defined inside themselves.",
-  "version": "3.2.2",
+  "version": "3.3.2",
   "author": "Damian Chojna",
   "license": "MIT",
   "private": false,

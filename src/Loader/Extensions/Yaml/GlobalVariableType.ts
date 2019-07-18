@@ -1,10 +1,10 @@
 const yaml = require('js-yaml');
 const _    = require('lodash');
 
-var GlobalVariableType = new yaml.Type('tag:yaml.org,2002:js/variable', {
+var GlobalVariableType = new yaml.Type('tag:yaml.org,2002:js/var', {
     kind: 'scalar',
     construct: function (path) {
-        return _.get(typeof window !== 'undefined' ?  window : global, path)
+        return _.clone(_.get(global, path));
     },
 });
 
